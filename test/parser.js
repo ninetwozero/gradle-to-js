@@ -53,10 +53,88 @@ describe("Gradle build file parser", function() {
         });
 
     });
-    
-    // it("handles a nested object", function() {
-    //     var dsl = 'block { key "value" }';
-    //     var expected = { block: { key: "value" } };
-    //     expect(parser.parseText(dsl)).to.equal(expected);   
-    // });
+
+    it("can detect a multiple single level block and their values", function() {
+        var dsl = multiline.stripIndent(function() {/*
+            testblock {
+                key1 "value1"
+                key2 "value2"
+            }
+            testblock2 {
+                key3 "value3"
+                key4 "value4"
+            }
+        */});
+        var expected = { testblock: { key1: "value1", key2: "value2" },
+            testblock2: { key3: "value3", key4: "value4"}
+        };
+        
+        return parser.parseText(dsl).then(function(parsedValue) {
+            expect(parsedValue).to.deep.equal(expected);   
+        });
+
+    });
+
+    it("can detect a mix of single level items", function() {
+        var dsl = multiline.stripIndent(function() {/*
+            testblock {
+                key1 "value1"
+                key2 "value2"
+            }
+            testblock3 "not really"
+            testblock2 {
+                key3 "value3"
+                key4 "value4"
+            }
+        */});
+        var expected = { testblock: { key1: "value1", key2: "value2" },
+            testblock2: { key3: "value3", key4: "value4"},
+            testblock3: "not really"
+        };
+
+        return parser.parseText(dsl).then(function(parsedValue) {
+            expect(parsedValue).to.deep.equal(expected);   
+        });
+
+    });
+
+    it("can detect chaos", function() {
+        var dsl = multiline.stripIndent(function() {/*
+            testblock {
+                key1 "value1"
+                key2 "value2"
+                nestedKey {
+                    key3 "value3"
+                    key4 "value4"
+                    key5 {
+                        key6 "value6"
+                    }
+                }
+            }
+            testblock2 {
+                key1 "value1"
+                key2 "value2"
+            }
+            testblock3 "not really"
+        */});
+        var expected = { 
+            testblock: { 
+                key1: "value1", 
+                key2: "value2",
+                nestedKey: {
+                    key3: "value3",
+                    key4: "value4",
+                    key5: {
+                        key6: "value6"
+                    }
+                }
+            },
+            testblock2: { key1: "value1", key2: "value2"},
+            testblock3: "not really"
+        };
+        return parser.parseText(dsl).then(function(parsedValue) {
+            expect(parsedValue).to.deep.equal(expected);   
+        });
+
+    });
 });
