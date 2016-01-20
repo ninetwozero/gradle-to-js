@@ -5,7 +5,7 @@ var multiline = require("multiline");
 var parser = require("../lib/parser");
 
 describe("Gradle build file parser", function() {
-    describe("Text parsing", function() {
+    describe.only("Text parsing", function() {
         it("can parse a single key=>value", function () {
             var dsl = 'key "value"';
             var expected = {key: "value"};
@@ -166,7 +166,7 @@ describe("Gradle build file parser", function() {
                 expect(parsedValue).to.deep.equal(expected);
             });
         });
-        it.only("will store multiple occurences of a key as an array", function () {
+        it("will store multiple occurences of a key as an array", function () {
             var dsl = multiline.stripIndent(function () {/*
                 testblock {
                     key1 "value1"
