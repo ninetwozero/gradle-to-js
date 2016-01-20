@@ -1,0 +1,17 @@
+testblock {
+    key1 "value1"
+    key2 "value2"
+    nestedKey {
+        key3 "value3"
+        key4 "value4"
+        key5 {
+            key6 "value6"
+        }
+    }
+}
+testblock2 {
+    key1 "value1"
+    key2 "value2"
+}
+testblock3 "not really"
+
