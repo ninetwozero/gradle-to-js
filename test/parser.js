@@ -186,6 +186,25 @@ describe("Gradle build file parser", function() {
                 expect(parsedValue).to.deep.equal(expected);
             });
         });
+        it.only("will be able to parse a list of items", function() {
+            var dsl = multiline.stripIndent(function () {/*
+                testblock {
+                    key1 ["value1", "value2"]
+                }
+                key1 ["value3", "value4"]
+            */});
+
+            var expected = {
+                testblock: {
+                    key1: ["value1", "value2"]
+                },
+                key1: ["value3", "value4"]
+            };
+            return parser.parseText(dsl).then(function (parsedValue) {
+                expect(parsedValue).to.deep.equal(expected);
+            });
+        });
+        // TODO: Add test for ...
     });
     describe("File parsing", function() {
         it("should be able to parse the small sample gradle file", function() {
