@@ -6,7 +6,7 @@ var parser = require("../lib/parser");
 
 describe("Gradle build file parser", function() {
     describe.only("Text parsing", function() {
-        it("can parse a single key=>value", function () {
+        it("can parse a single <<key value>>", function () {
             var dsl = 'key "value"';
             var expected = {key: "value"};
 
@@ -15,10 +15,31 @@ describe("Gradle build file parser", function() {
             });
         });
 
-        it("can parse a multiple key=>value combinations", function () {
+        it("can parse a single key=value", function() {
+            var dsl = 'key = "value"';
+            var expected = {key: "value"};
+            return parser.parseText(dsl).then(function (parsedValue) {
+                expect(parsedValue).to.deep.equal(expected);
+            });
+        });
+
+        it("can parse a multiple <<key value>> combinations", function () {
             var dsl = multiline.stripIndent(function () {/*
              key "value"
              key2 "value2"
+             */
+            });
+            var expected = {key: "value", key2: 'value2'};
+
+            return parser.parseText(dsl).then(function (parsedValue) {
+                expect(parsedValue).to.deep.equal(expected);
+            });
+        });
+
+        it("can parse a multiple <<key=value>> combinations", function () {
+            var dsl = multiline.stripIndent(function () {/*
+             key = "value"
+             key2 = "value2"
              */
             });
             var expected = {key: "value", key2: 'value2'};
@@ -186,7 +207,7 @@ describe("Gradle build file parser", function() {
                 expect(parsedValue).to.deep.equal(expected);
             });
         });
-        it.only("will be able to parse a list of items", function() {
+        it("will be able to parse a list of items", function() {
             var dsl = multiline.stripIndent(function () {/*
                 testblock {
                     key1 ["value1", "value2"]
@@ -204,14 +225,44 @@ describe("Gradle build file parser", function() {
                 expect(parsedValue).to.deep.equal(expected);
             });
         });
+
+        // Because the scoping that def imposes doesn't make a difference for us
+        it("should be able to collect definitions as regular variables", function() {
+            var dsl = multiline.stripIndent(function () {/*
+             def myVar1 = new Var()
+             def myVar2 = new Var(2)
+             */});
+
+            var expected = {
+                myVar1: "new Var()",
+                myVar2: "new Var(2)"
+            };
+            return parser.parseText(dsl).then(function (parsedValue) {
+                expect(parsedValue).to.deep.equal(expected);
+            });
+        });
+        it("should be able to collect complex definitions as regular variables", function() {
+            var dsl = multiline.stripIndent(function () {/*
+             def MyType myVar1 = new Var()
+             def MyType myVar2 = new Var(2)
+             */});
+
+            var expected = {
+                myVar1: "new Var()",
+                myVar2: "new Var(2)"
+            };
+            return parser.parseText(dsl).then(function (parsedValue) {
+                expect(parsedValue).to.deep.equal(expected);
+            });
+        });
         // TODO: Add test for ...
     });
     describe("File parsing", function() {
         it("should be able to parse the small sample gradle file", function() {
             var sampleFilePath = "test/sample-data/small.build.gradle";
-            var expected = { 
-                testblock: { 
-                    key1: "value1", 
+            var expected = {
+                testblock: {
+                    key1: "value1",
                     key2: "value2",
                     nestedKey: {
                         key3: "value3",
@@ -231,20 +282,105 @@ describe("Gradle build file parser", function() {
 
         it("should be able to parse the muzei gradle file", function() {
             var sampleFilePath = "test/sample-data/muzei.build.gradle";
-            var expected = { 
-                testblock: { 
-                    key1: "value1", 
-                    key2: "value2",
-                    nestedKey: {
-                        key3: "value3",
-                        key4: "value4",
-                        key5: {
-                            key6: "value6"
-                        }
+            var expected = {
+                buildscript: {
+                    repositories: [
+                        "mavenCentral()"
+                    ],
+                    dependencies: {
+                        classpath: "rootProject.ext.gradleClasspath"
                     }
                 },
-                testblock2: { key1: "value1", key2: "value2"},
-                testblock3: "not really"
+                apply: "plugin: 'com.android.application'",
+                "project.archivesBaseName": "muzei",
+
+                repositories: [
+                    "mavenCentral()"
+                ],
+
+                android: {
+                    compileSdkVersion: "rootProject.ext.compileSdkVersion",
+                    buildToolsVersion: "rootProject.ext.buildToolsVersion",
+
+                    defaultConfig: {
+                        minSdkVersion: 17,
+                        targetSdkVersion: "rootProject.ext.targetSdkVersion",
+                        renderscriptTargetApi: "rootProject.ext.targetSdkVersion",
+                        renderscriptSupportModeEnabled: true,
+
+                        versionCode: "versionProps['code'].toInteger()",
+                        versionName: "versionProps['name']",
+                        versionProps: "new Properties()"
+                    },
+
+                    signingConfigs: {
+                        release: {
+                            keyProps: "new Properties()",
+                            localProps: "new Properties()",
+
+                            storeFile: 'keyProps["store"] != null ? file(keyProps["store"]) : null',
+                            keyAlias: 'keyProps["alias"] ?: ""',
+                            storePassword: 'keyProps["storePass"] ?: ""',
+                            keyPassword: 'keyProps["pass"] ?: ""'
+                        }
+                    },
+
+                    productFlavors: {
+                        dev: {
+                            minSdkVersion: 21,
+                            multiDexEnabled: true
+                        },
+                        prod: {}
+                    },
+
+                    buildTypes: {
+                        debug: {
+                            versionNameSuffix: " Debug"
+                        },
+                        release: {
+                            minifyEnabled: true,
+                            shrinkResources: true,
+                            proguardFiles: "getDefaultProguardFile('proguard-android.txt'), file('proguard-project.txt')",
+                            signingConfig: "signingConfigs.release"
+                        },
+                        publicBeta: {
+                            minifyEnabled: true,
+                            shrinkResources: true,
+                            proguardFiles: "getDefaultProguardFile('proguard-android.txt'), file('proguard-project.txt')",
+                            versionNameSuffix: "\" \" + versionProps['betaNumber']"
+                        },
+                        publicDebug: {
+                            debuggable: true,
+                            renderscriptDebuggable: true,
+                            minifyEnabled: true,
+                            shrinkResources: true,
+                            proguardFiles: "getDefaultProguardFile('proguard-android.txt'), file('proguard-project.txt')",
+                            versionNameSuffix: "\" Debug \" + versionProps['betaNumber']"
+                        }
+                    },
+
+                    compileOptions: {
+                        sourceCompatibility: "JavaVersion.VERSION_1_7",
+                        targetCompatibility: "JavaVersion.VERSION_1_7"
+                    }
+                },
+
+                dependencies: {
+                    compile: [
+                        "com.squareup.okhttp:okhttp:2.1.0",
+                        "com.squareup.okhttp:okhttp-urlconnection:2.1.0",
+                        "com.squareup.picasso:picasso:2.4.0",
+                        "com.google.android.gms:play-services-wearable:8.3.0",
+                        "de.greenrobot:eventbus:2.4.0",
+                        "com.android.support:appcompat-v7:23.1.1",
+                        "com.android.support:recyclerview-v7:23.1.1",
+                        "com.android.support:design:23.1.1",
+                        "com.android.support:customtabs:23.1.1",
+                        "project(':android-client-common')"
+                    ],
+                    devWearApp: "project(path: ':wearable', configuration: 'devRelease')",
+                    prodWearApp: "project(path: ':wearable', configuration: 'prodRelease')"
+                }
             };
             return parser.parseFile(sampleFilePath).then(function(parsedValue) {
                 expect(parsedValue).to.deep.equal(expected);   
