@@ -332,7 +332,7 @@ describe("Gradle build file parser", function() {
                 expect(parsedValue).to.deep.equal(expected);
             });
         });
-        it.only("can skip if blocks", function() {
+        it("can skip if blocks", function() {
             var dsl = multiline.stripIndent(function () {/*
              myVar1 "a"
              if (myVar301 === "sausage") {
