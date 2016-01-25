@@ -332,6 +332,23 @@ describe("Gradle build file parser", function() {
                 expect(parsedValue).to.deep.equal(expected);
             });
         });
+        it.only("can skip if blocks", function() {
+            var dsl = multiline.stripIndent(function () {/*
+             myVar1 "a"
+             if (myVar301 === "sausage") {
+                myVar2 "b"
+             }
+             myVar2 "c"
+             */});
+
+            var expected = {
+                myVar1: "a",
+                myVar2: "c"
+            };
+            return parser.parseText(dsl).then(function (parsedValue) {
+                expect(parsedValue).to.deep.equal(expected);
+            });
+        });
         // TODO: Add test for ...
     });
     describe("File parsing", function() {
@@ -389,6 +406,7 @@ describe("Gradle build file parser", function() {
                     compileSdkVersion: "rootProject.ext.compileSdkVersion",
                     buildToolsVersion: "rootProject.ext.buildToolsVersion",
 
+                    versionProps: "new Properties()",
                     defaultConfig: {
                         minSdkVersion: 17,
                         targetSdkVersion: "rootProject.ext.targetSdkVersion",
@@ -396,8 +414,7 @@ describe("Gradle build file parser", function() {
                         renderscriptSupportModeEnabled: true,
 
                         versionCode: "versionProps['code'].toInteger()",
-                        versionName: "versionProps['name']",
-                        versionProps: "new Properties()"
+                        versionName: "versionProps['name']"
                     },
 
                     signingConfigs: {

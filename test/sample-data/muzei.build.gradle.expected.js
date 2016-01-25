@@ -23,6 +23,7 @@ var expected = {
     compileSdkVersion: "rootProject.ext.compileSdkVersion",
     buildToolsVersion: "rootProject.ext.buildToolsVersion",
 
+    versionProps: "new Properties()",
     defaultConfig: {
       minSdkVersion: 17,
       targetSdkVersion: "rootProject.ext.targetSdkVersion",
@@ -31,7 +32,6 @@ var expected = {
 
       versionCode: "versionProps['code'].toInteger()",
       versionName: "versionProps['name']",
-      versionProps: "new Properties()"
     },
 
     signingConfigs: {
