@@ -255,6 +255,41 @@ describe("Gradle build file parser", function() {
                 expect(parsedValue).to.deep.equal(expected);
             });
         });
+
+        it("should skip (seemingly) function calls to variables", function() {
+            var dsl = multiline.stripIndent(function () {/*
+             def MyType myVar1 = new Var()
+             myVar1.loadSomething(new Cake())
+             */});
+
+            var expected = {
+                myVar1: "new Var()"
+            };
+            return parser.parseText(dsl).then(function (parsedValue) {
+                expect(parsedValue).to.deep.equal(expected);
+            });
+        });
+
+        it("should group repositories into an array", function() {
+            var dsl = multiline.stripIndent(function () {/*
+             repositories {
+                mavenCentral()
+                maven {
+                    url "http://test"
+                }
+             }
+            */});
+
+            var expected = {
+                repositories: [
+                    { type: "unknown", data: { name: "mavenCentral()" } },
+                    { type: "maven", data: { url: "http://test" } }
+                ]
+            };
+            return parser.parseText(dsl).then(function (parsedValue) {
+                expect(parsedValue).to.deep.equal(expected);
+            });
+        });
         // TODO: Add test for ...
     });
     describe("File parsing", function() {
@@ -285,7 +320,12 @@ describe("Gradle build file parser", function() {
             var expected = {
                 buildscript: {
                     repositories: [
-                        "mavenCentral()"
+                        {
+                            data: {
+                                name: "mavenCentral()"
+                            },
+                            type: "unknown"
+                        }
                     ],
                     dependencies: {
                         classpath: "rootProject.ext.gradleClasspath"
@@ -295,7 +335,12 @@ describe("Gradle build file parser", function() {
                 "project.archivesBaseName": "muzei",
 
                 repositories: [
-                    "mavenCentral()"
+                    {
+                        data: {
+                            name: "mavenCentral()"
+                        },
+                        type: "unknown"
+                    }
                 ],
 
                 android: {

@@ -11,7 +11,12 @@ var expected = {
   "project.archivesBaseName": "muzei",
 
   repositories: [
-    "mavenCentral()"
+    {
+      data: {
+        name: "mavenCentral()"
+      },
+      type: "unknown"
+    }
   ],
 
   android: {
