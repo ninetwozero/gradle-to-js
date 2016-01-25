@@ -5,7 +5,7 @@ var multiline = require("multiline");
 var parser = require("../lib/parser");
 
 describe("Gradle build file parser", function() {
-    describe.only("Text parsing", function() {
+    describe("Text parsing", function() {
         it("can parse a single <<key value>>", function () {
             var dsl = 'key "value"';
             var expected = {key: "value"};
@@ -207,6 +207,7 @@ describe("Gradle build file parser", function() {
                 expect(parsedValue).to.deep.equal(expected);
             });
         });
+
         it("will be able to parse a list of items", function() {
             var dsl = multiline.stripIndent(function () {/*
                 testblock {
@@ -290,6 +291,47 @@ describe("Gradle build file parser", function() {
                 expect(parsedValue).to.deep.equal(expected);
             });
         });
+
+        it("should be able to parse booleans into booleans", function() {
+            var dsl = multiline.stripIndent(function () {/*
+             myVar1 true
+             someAttribute true
+             someFalseAttribute false
+             myVar2 false
+             */
+            });
+
+            var expected = {
+                myVar1: true,
+                someAttribute: true,
+                someFalseAttribute: false,
+                myVar2: false
+            };
+            return parser.parseText(dsl).then(function (parsedValue) {
+                expect(parsedValue).to.deep.equal(expected);
+            });
+        });
+
+        it("should be able to parse numbers as numbers", function() {
+            var dsl = multiline.stripIndent(function () {/*
+             myVar301 1
+             myVar402 32
+             myVar103 33
+             myVar204 4
+             */});
+
+            var expected = {
+                myVar301: 1,
+                myVar402: 32,
+                myVar103: 33,
+                myVar204: 4
+            };
+            return parser.parseText(dsl).then(function (parsedValue) {
+                expect(parsedValue).to.deep.equal(expected);
+            });
+        });
+
+        
         // TODO: Add test for ...
     });
     describe("File parsing", function() {
