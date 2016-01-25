@@ -214,13 +214,15 @@ describe("Gradle build file parser", function() {
                     key1 ["value1", "value2"]
                 }
                 key1 ["value3", "value4"]
+                specialKey " " + key1["sausage"]
             */});
 
             var expected = {
                 testblock: {
                     key1: ["value1", "value2"]
                 },
-                key1: ["value3", "value4"]
+                key1: ["value3", "value4"],
+                specialKey: '" " + key1["sausage"]'
             };
             return parser.parseText(dsl).then(function (parsedValue) {
                 expect(parsedValue).to.deep.equal(expected);
@@ -330,8 +332,6 @@ describe("Gradle build file parser", function() {
                 expect(parsedValue).to.deep.equal(expected);
             });
         });
-
-        
         // TODO: Add test for ...
     });
     describe("File parsing", function() {
