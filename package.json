@@ -1,33 +1,28 @@
 {
-  "name": "gradle-to-json",
+  "name": "gradle-to-js",
   "version": "1.0.0",
-  "description": "A quick & dirty gradle build file converter to a json representation",
+  "description": "A quick & dirty gradle build file converter to javascript object",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ninetwozero/gradle-to-json.git"
+    "url": "git+https://github.com/ninetwozero/gradle-to-js.git"
   },
   "keywords": [
     "gradle",
-    "json",
+    "javascript",
     "parsing"
   ],
   "author": "Karl Lindmark",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/ninetwozero/gradle-to-json/issues"
+    "url": "https://github.com/ninetwozero/gradle-to-js/issues"
   },
-  "homepage": "https://github.com/ninetwozero/gradle-to-json#readme",
+  "homepage": "https://github.com/ninetwozero/gradle-to-js#readme",
   "devDependencies": {
     "chai": "^3.4.1",
-    "jasmine-core": "^2.4.1",
-    "karma": "^0.13.19",
-    "karma-cli": "^0.1.2",
-    "karma-jasmine": "^0.3.6",
-    "karma-phantomjs-launcher": "^0.2.3",
     "mocha": "^2.3.4",
     "multiline": "^1.0.2",
     "phantomjs": "^1.9.19"
