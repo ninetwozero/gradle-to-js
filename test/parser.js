@@ -314,7 +314,7 @@ describe('Gradle build file parser', function() {
       });
     });
 
-    it('should be able to parse numbers as numbers', function() {
+    it('should parse numbers as strings', function() {
       var dsl = multiline.stripIndent(function() {/*
              myVar301 1
              myVar402 32
@@ -323,10 +323,10 @@ describe('Gradle build file parser', function() {
              */      });
 
       var expected = {
-        myVar301: 1,
-        myVar402: 32,
-        myVar103: 33,
-        myVar204: 4
+        myVar301: '1',
+        myVar402: '32',
+        myVar103: '33',
+        myVar204: '4'
       };
       return parser.parseText(dsl).then(function(parsedValue) {
         expect(parsedValue).to.deep.equal(expected);
@@ -408,7 +408,7 @@ describe('Gradle build file parser', function() {
 
           versionProps: 'new Properties()',
           defaultConfig: {
-            minSdkVersion: 17,
+            minSdkVersion: '17',
             targetSdkVersion: 'rootProject.ext.targetSdkVersion',
             renderscriptTargetApi: 'rootProject.ext.targetSdkVersion',
             renderscriptSupportModeEnabled: true,
@@ -431,7 +431,7 @@ describe('Gradle build file parser', function() {
 
           productFlavors: {
             dev: {
-              minSdkVersion: 21,
+              minSdkVersion: '21',
               multiDexEnabled: true
             },
             prod: {}
