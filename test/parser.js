@@ -349,6 +349,28 @@ describe('Gradle build file parser', function() {
         expect(parsedValue).to.deep.equal(expected);
       });
     });
+
+    it('can skip function definitions', function() {
+      var dsl = multiline.stripIndent(function() {/*
+             myVar1 "a"
+             def fibonacci (int i) {
+               if (i <= 2) {
+                 return 1;
+               } else {
+                 return fibonacci(i - 1) + fibonacci(i - 2);
+               }
+             }
+             myVar2 "c"
+             */      });
+
+      var expected = {
+        myVar1: 'a',
+        myVar2: 'c'
+      };
+      return parser.parseText(dsl).then(function(parsedValue) {
+        expect(parsedValue).to.deep.equal(expected);
+      });
+    });
     // TODO: Add test for ...
   });
   describe('File parsing', function() {
