@@ -371,6 +371,52 @@ describe('Gradle build file parser', function() {
         expect(parsedValue).to.deep.equal(expected);
       });
     });
+    it('will merge multiple closures with the same key into one', function() {
+      var dsl = multiline.stripIndent(function() {/*
+        android {
+          property1 'one'
+        }
+
+        android {
+          property2 'two'
+        }
+
+        android {
+          property3 'three'
+        }
+      */});
+
+      var expected = { android: { property1: 'one', property2: 'two', property3: 'three' } };
+      return parser.parseText(dsl).then(function(parsedValue) {
+        expect(parsedValue).to.deep.equal(expected);
+      });
+    });
+    it('will deep merge multiple complex closures with the same key into one', function() {
+      var dsl = multiline.stripIndent(function() {/*
+        foo {
+          android {
+            property1 'one'
+          }
+
+          android {
+            property2 'two'
+          }
+
+          android {
+            property3 'three'
+          }
+
+          android {
+            property4 'four'
+          }
+        }
+      */});
+
+      var expected = {foo: { android: { property1: 'one', property2: 'two', property3: 'three', property4: 'four' } } };
+      return parser.parseText(dsl).then(function(parsedValue) {
+        expect(parsedValue).to.deep.equal(expected);
+      });
+    });
     // TODO: Add test for ...
   });
   describe('File parsing', function() {
