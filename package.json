@@ -1,6 +1,6 @@
 {
   "name": "gradle-to-js",
-  "version": "0.1.1",
+  "version": "0.2.5",
   "description": "A quick & dirty gradle build file converter to javascript object",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,10 @@
     "gradle",
     "javascript",
     "parsing"
+  ],
+  "files" : [
+    "lib/",
+    "index.js"
   ],
   "author": "Karl Lindmark",
   "license": "Apache-2.0",
