@@ -244,6 +244,7 @@ describe('Gradle build file parser', function() {
         expect(parsedValue).to.deep.equal(expected);
       });
     });
+
     it('should be able to collect complex definitions as regular variables', function() {
       var dsl = multiline.stripIndent(function() {/*
              def MyType myVar1 = new Var()
@@ -281,7 +282,7 @@ describe('Gradle build file parser', function() {
                     url "http://test"
                 }
              }
-            */      });
+            */});
 
       var expected = {
         repositories: [
@@ -367,6 +368,71 @@ describe('Gradle build file parser', function() {
         myVar1: 'a',
         myVar2: 'c'
       };
+      return parser.parseText(dsl).then(function(parsedValue) {
+        expect(parsedValue).to.deep.equal(expected);
+      });
+    });
+
+    it('will manage to parse closures that have brackets on another line', function() {
+      var dsl = multiline.stripIndent(function() {/*
+        android {
+          property1 'one'
+        }
+
+        android
+        {
+          property2 'two'
+        }
+      */});
+
+      var expected = { android: { property1: 'one', property2: 'two'} };
+      return parser.parseText(dsl).then(function(parsedValue) {
+        expect(parsedValue).to.deep.equal(expected);
+      });
+    });
+
+    it('will merge multiple closures with the same key into one', function() {
+      var dsl = multiline.stripIndent(function() {/*
+        android {
+          property1 'one'
+        }
+
+        android {
+          property2 'two'
+        }
+
+        android {
+          property3 'three'
+        }
+      */});
+
+      var expected = { android: { property1: 'one', property2: 'two', property3: 'three' } };
+      return parser.parseText(dsl).then(function(parsedValue) {
+        expect(parsedValue).to.deep.equal(expected);
+      });
+    });
+    it('will deep merge multiple complex closures with the same key into one', function() {
+      var dsl = multiline.stripIndent(function() {/*
+        foo {
+          android {
+            property1 'one'
+          }
+
+          android {
+            property2 'two'
+          }
+
+          android {
+            property3 'three'
+          }
+
+          android {
+            property4 'four'
+          }
+        }
+      */});
+
+      var expected = {foo: { android: { property1: 'one', property2: 'two', property3: 'three', property4: 'four' } } };
       return parser.parseText(dsl).then(function(parsedValue) {
         expect(parsedValue).to.deep.equal(expected);
       });

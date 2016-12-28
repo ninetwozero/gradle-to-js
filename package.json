@@ -28,6 +28,7 @@
     "phantomjs": "1.9.20"
   },
   "dependencies": {
-    "bluebird": "3.3.5"
+    "bluebird": "3.3.5",
+    "deep-assign": "2.0.0"
   }
 }
