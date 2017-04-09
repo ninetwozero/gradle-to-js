@@ -16,7 +16,7 @@ Using `gradle-to-js` as a module, you can parse both strings and files as seen b
 
 ### Files
 ```
-var g2js = import('gradle-to-js');
+var g2js = require('gradle-to-js/lib/parser');
 g2js.parseFile('path/to/buildfile').then(function(representation) {
   console.log(representation);
 });
@@ -24,7 +24,7 @@ g2js.parseFile('path/to/buildfile').then(function(representation) {
 
 ### Strings
 ```
-var g2js = import('gradle-to-js');
+var g2js = require('gradle-to-js/lib/parser');
 g2js.parseText('key "value"').then(function(representation) {
   console.log(representation);
 });
