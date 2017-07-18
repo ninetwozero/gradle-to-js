@@ -5,7 +5,7 @@ var multiline = require('multiline');
 var parser = require('../lib/parser');
 
 describe('Gradle build file parser', function() {
-  describe('Text parsing', function() {
+  describe('(text parsing)', function() {
     it('can parse a single <<key value>>', function() {
       var dsl = 'key "value"';
       var expected = {key: 'value'};
@@ -437,9 +437,76 @@ describe('Gradle build file parser', function() {
         expect(parsedValue).to.deep.equal(expected);
       });
     });
+
+    it('will handle compile keywords separately', function() {
+      var dsl = multiline.stripIndent(function() {/*        
+      dependencies {
+        compile (project(':react-native-maps')) {
+          exclude group: 'com.google.android.gms', module: 'play-services-base'
+          exclude group: 'com.google.android.gms', module: 'play-services-maps'
+        }
+        compile (project(':react-native-background-geolocation')) {
+          exclude group: 'com.google.android.gms', module: 'play-services-location'
+        }
+        compile 'g1:a1:v1'
+        compile group: 'g2', name: 'a2', version: 'v2'
+      }
+      */});
+
+      var expected = {
+        dependencies: [
+          { 
+            group: '',
+            name: 'project(\':react-native-maps\')',
+            version: '',
+            type: 'compile',
+            excludes: [
+              {
+                group: 'com.google.android.gms',
+                module: 'play-services-base'
+              },
+              {
+                group: 'com.google.android.gms',
+                module: 'play-services-maps'
+              }
+            ]
+          },
+          {
+            group: '',
+            name: 'project(\':react-native-background-geolocation\')',
+            version: '',
+            type: 'compile',
+            excludes: [
+              {
+                group: 'com.google.android.gms', 
+                module: 'play-services-location'
+              }
+            ]
+          },
+          {
+            group: 'g1',
+            name: 'a1',
+            version: 'v1',
+            type: 'compile',
+            excludes: []
+          },
+          {
+            group: 'g2',
+            name: 'a2',
+            version: 'v2',
+            type: 'compile',
+            excludes: []
+          }
+        ]
+      };
+
+      return parser.parseText(dsl).then(function(parsedValue) {
+        expect(parsedValue).to.deep.equal(expected);
+      });
+    });
     // TODO: Add test for ...
   });
-  describe('File parsing', function() {
+  describe('(file parsing)', function() {
     it('should be able to parse the small sample gradle file', function() {
       var sampleFilePath = 'test/sample-data/small.build.gradle';
       var expected = {
@@ -464,116 +531,8 @@ describe('Gradle build file parser', function() {
 
     it('should be able to parse the muzei gradle file', function() {
       var sampleFilePath = 'test/sample-data/muzei.build.gradle';
-      var expected = {
-        buildscript: {
-          repositories: [
-                        {
-                          data: {
-                            name: 'mavenCentral()'
-                          },
-                          type: 'unknown'
-                        }
-                    ],
-          dependencies: {
-            classpath: 'rootProject.ext.gradleClasspath'
-          }
-        },
-        apply: 'plugin: \'com.android.application\'',
-        'project.archivesBaseName': 'muzei',
+      var expected = require(process.cwd() + '/test/sample-data/muzei.build.gradle.expected.js').expected;
 
-        repositories: [
-                    {
-                      data: {
-                        name: 'mavenCentral()'
-                      },
-                      type: 'unknown'
-                    }
-                ],
-
-        android: {
-          compileSdkVersion: 'rootProject.ext.compileSdkVersion',
-          buildToolsVersion: 'rootProject.ext.buildToolsVersion',
-
-          versionProps: 'new Properties()',
-          defaultConfig: {
-            minSdkVersion: '17',
-            targetSdkVersion: 'rootProject.ext.targetSdkVersion',
-            renderscriptTargetApi: 'rootProject.ext.targetSdkVersion',
-            renderscriptSupportModeEnabled: true,
-
-            versionCode: 'versionProps[\'code\'].toInteger()',
-            versionName: 'versionProps[\'name\']'
-          },
-
-          signingConfigs: {
-            release: {
-              keyProps: 'new Properties()',
-              localProps: 'new Properties()',
-
-              storeFile: 'keyProps["store"] != null ? file(keyProps["store"]) : null',
-              keyAlias: 'keyProps["alias"] ?: ""',
-              storePassword: 'keyProps["storePass"] ?: ""',
-              keyPassword: 'keyProps["pass"] ?: ""'
-            }
-          },
-
-          productFlavors: {
-            dev: {
-              minSdkVersion: '21',
-              multiDexEnabled: true
-            },
-            prod: {}
-          },
-
-          buildTypes: {
-            debug: {
-              versionNameSuffix: ' Debug'
-            },
-            release: {
-              minifyEnabled: true,
-              shrinkResources: true,
-              proguardFiles: 'getDefaultProguardFile(\'proguard-android.txt\'), file(\'proguard-project.txt\')',
-              signingConfig: 'signingConfigs.release'
-            },
-            publicBeta: {
-              minifyEnabled: true,
-              shrinkResources: true,
-              proguardFiles: 'getDefaultProguardFile(\'proguard-android.txt\'), file(\'proguard-project.txt\')',
-              versionNameSuffix: '" " + versionProps[\'betaNumber\']'
-            },
-            publicDebug: {
-              debuggable: true,
-              renderscriptDebuggable: true,
-              minifyEnabled: true,
-              shrinkResources: true,
-              proguardFiles: 'getDefaultProguardFile(\'proguard-android.txt\'), file(\'proguard-project.txt\')',
-              versionNameSuffix: '" Debug " + versionProps[\'betaNumber\']'
-            }
-          },
-
-          compileOptions: {
-            sourceCompatibility: 'JavaVersion.VERSION_1_7',
-            targetCompatibility: 'JavaVersion.VERSION_1_7'
-          }
-        },
-
-        dependencies: {
-          compile: [
-              'com.squareup.okhttp:okhttp:2.1.0',
-              'com.squareup.okhttp:okhttp-urlconnection:2.1.0',
-              'com.squareup.picasso:picasso:2.4.0',
-              'com.google.android.gms:play-services-wearable:8.3.0',
-              'de.greenrobot:eventbus:2.4.0',
-              'com.android.support:appcompat-v7:23.1.1',
-              'com.android.support:recyclerview-v7:23.1.1',
-              'com.android.support:design:23.1.1',
-              'com.android.support:customtabs:23.1.1',
-              'project(\':android-client-common\')'
-          ],
-          devWearApp: 'project(path: \':wearable\', configuration: \'devRelease\')',
-          prodWearApp: 'project(path: \':wearable\', configuration: \'prodRelease\')'
-        }
-      };
       return parser.parseFile(sampleFilePath).then(function(parsedValue) {
         expect(parsedValue).to.deep.equal(expected);
       });
