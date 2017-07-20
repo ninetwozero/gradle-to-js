@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath some.classpath.entry
+    }
+}
+
+
 dependencies {
     compile (project(':react-native-maps')) {
         exclude group: 'com.google.android.gms', module: 'play-services-base'
@@ -16,7 +26,7 @@ dependencies {
     }
 
 
-    /*compile 'g1:a1:v1'
+    compile 'g1:a1:v1'
     runtime group: 'g2', name: 'a2', version: 'v2'
     compile('g3:a3:v3') {
         exclude group: 'com.google.android.gms', module: 'play-services-location'
@@ -28,5 +38,8 @@ dependencies {
     // comment
     compile project(':project-behind-comment')
     compile project(':project-behind-comment2')
-    */
+    
+
+    devWearApp project(':wear')
+    prodWearApp project(':wear')
 }

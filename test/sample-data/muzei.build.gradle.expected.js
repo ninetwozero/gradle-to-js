@@ -8,7 +8,15 @@ exports.expected = {
           type: 'unknown'
         }
       ],
-      dependencies: []
+      dependencies: [
+        {
+          group: '',
+          name: 'rootProject.ext.gradleClasspath',
+          version: '',
+          type: 'classpath',
+          excludes: []
+        }
+      ]
     },
     apply: 'plugin: \'com.android.application\'',
     'project.archivesBaseName': 'muzei',
@@ -158,6 +166,20 @@ exports.expected = {
         name: 'project(\':android-client-common\')',
         version: '',
         type: 'compile',
+        excludes: []
+      },
+      {
+        group: '',
+        name: 'project(path: \':wearable\', configuration: \'devRelease\')',
+        version: '',
+        type: 'devWearApp',
+        excludes: []
+      },
+      {
+        group: '',
+        name: 'project(path: \':wearable\', configuration: \'prodRelease\')',
+        version: '',
+        type: 'prodWearApp',
         excludes: []
       }
     ]
