@@ -1,0 +1,45 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath some.classpath.entry
+    }
+}
+
+
+dependencies {
+    compile (project(':react-native-maps')) {
+        exclude group: 'com.google.android.gms', module: 'play-services-base'
+        exclude group: 'com.google.android.gms', module: 'play-services-maps'
+    }
+    testRuntime (project(':react-native-background-geolocation')) {
+        exclude group: 'com.google.android.gms', module: 'play-services-location'
+    }
+    compile (group: 'g0', name: 'a0', version: 'v0') {
+        exclude group: 'com.google.android.gms1'
+        exclude module: 'play-services-location1'
+    }    
+    compile (group: 'g0', name: 'a0', version: 'v0') {
+        exclude group: 'com.google.android.gms1'
+        exclude module: 'play-services-location1'
+    }
+
+
+    compile 'g1:a1:v1'
+    runtime group: 'g2', name: 'a2', version: 'v2'
+    compile('g3:a3:v3') {
+        exclude group: 'com.google.android.gms', module: 'play-services-location'
+    }
+
+    compile('com.org.g4:org-a4:org-v4')
+    testCompile (group: 'g5', name: 'a5', version: 'v5')
+    
+    // comment
+    compile project(':project-behind-comment')
+    compile project(':project-behind-comment2')
+    
+
+    devWearApp project(':wear')
+    prodWearApp project(':wear')
+}

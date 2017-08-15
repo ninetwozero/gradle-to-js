@@ -1,12 +1,22 @@
-(function() {
-  return {
+exports.expected = {
     buildscript: {
-      repositories: [
-        'mavenCentral()'
+      repositories: [  
+        {
+          data: {
+            name: 'mavenCentral()'
+          },
+          type: 'unknown'
+        }
       ],
-      dependencies: {
-        classpath: 'rootProject.ext.gradleClasspath'
-      }
+      dependencies: [
+        {
+          group: '',
+          name: 'rootProject.ext.gradleClasspath',
+          version: '',
+          type: 'classpath',
+          excludes: []
+        }
+      ]
     },
     apply: 'plugin: \'com.android.application\'',
     'project.archivesBaseName': 'muzei',
@@ -26,7 +36,7 @@
 
       versionProps: 'new Properties()',
       defaultConfig: {
-        minSdkVersion: 17,
+        minSdkVersion: '17',
         targetSdkVersion: 'rootProject.ext.targetSdkVersion',
         renderscriptTargetApi: 'rootProject.ext.targetSdkVersion',
         renderscriptSupportModeEnabled: true,
@@ -49,7 +59,7 @@
 
       productFlavors: {
         dev: {
-          minSdkVersion: 21,
+          minSdkVersion: '21',
           multiDexEnabled: true
         },
         prod: {}
@@ -87,21 +97,90 @@
       }
     },
 
-    dependencies: {
-      compile: [
-        'com.squareup.okhttp:okhttp:2.1.0',
-        'com.squareup.okhttp:okhttp-urlconnection:2.1.0',
-        'com.squareup.picasso:picasso:2.4.0',
-        'com.google.android.gms:play-services-wearable:8.3.0',
-        'de.greenrobot:eventbus:2.4.0',
-        'com.android.support:appcompat-v7:23.1.1',
-        'com.android.support:recyclerview-v7:23.1.1',
-        'com.android.support:design:23.1.1',
-        'com.android.support:customtabs:23.1.1',
-        'project(\':android-client-common\')'
-      ],
-      devWearApp: 'project(path: \':wearable\', configuration: \'devRelease\')',
-      prodWearApp: 'project(path: \':wearable\', configuration: \'prodRelease\')'
-    }
-  };
-})();
+    dependencies: [
+      {
+        group: 'com.squareup.okhttp',
+        name: 'okhttp',
+        version: '2.1.0',
+        type: 'compile',
+        excludes: []
+      },
+      {
+        group: 'com.squareup.okhttp',
+        name: 'okhttp-urlconnection',
+        version: '2.1.0',
+        type: 'compile',
+        excludes: []
+      },
+      {
+        group: 'com.squareup.picasso',
+        name: 'picasso',
+        version: '2.4.0',
+        type: 'compile',
+        excludes: []
+      },
+      {
+        group: 'com.google.android.gms',
+        name: 'play-services-wearable',
+        version: '8.3.0',
+        type: 'compile',
+        excludes: []
+      },
+      {
+        group: 'de.greenrobot',
+        name: 'eventbus',
+        version: '2.4.0',
+        type: 'compile',
+        excludes: []
+      },
+      {
+        group: 'com.android.support',
+        name: 'appcompat-v7',
+        version: '23.1.1',
+        type: 'compile',
+        excludes: []
+      },
+      {
+        group: 'com.android.support',
+        name: 'recyclerview-v7',
+        version: '23.1.1',
+        type: 'compile',
+        excludes: []
+      },
+      {
+        group: 'com.android.support',
+        name: 'design',
+        version: '23.1.1',
+        type: 'compile',
+        excludes: []
+      },
+      {
+        group: 'com.android.support',
+        name: 'customtabs',
+        version: '23.1.1',
+        type: 'compile',
+        excludes: []
+      },
+      {
+        group: '',
+        name: 'project(\':android-client-common\')',
+        version: '',
+        type: 'compile',
+        excludes: []
+      },
+      {
+        group: '',
+        name: 'project(path: \':wearable\', configuration: \'devRelease\')',
+        version: '',
+        type: 'devWearApp',
+        excludes: []
+      },
+      {
+        group: '',
+        name: 'project(path: \':wearable\', configuration: \'prodRelease\')',
+        version: '',
+        type: 'prodWearApp',
+        excludes: []
+      }
+    ]
+  }

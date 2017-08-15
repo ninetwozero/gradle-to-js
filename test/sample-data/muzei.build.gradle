@@ -123,7 +123,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:customtabs:23.1.1'
-
+    
     // :api is included as a transitive dependency from :android-client-common
     // compile project(':api')
     compile project(':android-client-common')
