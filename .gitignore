@@ -37,3 +37,10 @@ node_modules
 
 # Vim stuff
 *.swp
+
+# Other IDEs
+.vscode
+*.sublime-workspace
+
+# Misc
+.DS_Store
