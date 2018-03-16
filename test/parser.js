@@ -439,7 +439,7 @@ describe('Gradle build file parser', function() {
     });
 
     it('will handle compile keywords separately', function() {
-      var dsl = multiline.stripIndent(function() {/*        
+      var dsl = multiline.stripIndent(function() {/*
       dependencies {
         compile (project(':react-native-maps')) {
           exclude group: 'com.google.android.gms', module: 'play-services-base'
@@ -455,7 +455,7 @@ describe('Gradle build file parser', function() {
 
       var expected = {
         dependencies: [
-          { 
+          {
             group: '',
             name: 'project(\':react-native-maps\')',
             version: '',
@@ -478,7 +478,7 @@ describe('Gradle build file parser', function() {
             type: 'compile',
             excludes: [
               {
-                group: 'com.google.android.gms', 
+                group: 'com.google.android.gms',
                 module: 'play-services-location'
               }
             ]
@@ -532,6 +532,15 @@ describe('Gradle build file parser', function() {
     it('should be able to parse the muzei gradle file', function() {
       var sampleFilePath = 'test/sample-data/muzei.build.gradle';
       var expected = require(process.cwd() + '/test/sample-data/muzei.build.gradle.expected.js').expected;
+
+      return parser.parseFile(sampleFilePath).then(function(parsedValue) {
+        expect(parsedValue).to.deep.equal(expected);
+      });
+    });
+
+    it('should be able to parse the ivy gradle file', function() {
+      var sampleFilePath = 'test/sample-data/ivy.build.gradle';
+      var expected = require(process.cwd() + '/test/sample-data/ivy.build.gradle.expected.js').expected;
 
       return parser.parseFile(sampleFilePath).then(function(parsedValue) {
         expect(parsedValue).to.deep.equal(expected);
