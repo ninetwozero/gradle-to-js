@@ -351,6 +351,24 @@ describe('Gradle build file parser', function() {
       });
     });
 
+    it('can skip if clauses without brackets', function() {
+      var dsl = multiline.stripIndent(function() {/*
+             myVar1 "a"
+             if (myBreakfast === "eggs") myVar1 "b"
+             myVar2 "c"
+             if (myBreakfast === "bacon")
+                myVar2 "d"
+             */      });
+
+      var expected = {
+        myVar1: 'a',
+        myVar2: 'c'
+      };
+      return parser.parseText(dsl).then(function(parsedValue) {
+        expect(parsedValue).to.deep.equal(expected);
+      });
+});
+
     it('can skip function definitions', function() {
       var dsl = multiline.stripIndent(function() {/*
              myVar1 "a"
