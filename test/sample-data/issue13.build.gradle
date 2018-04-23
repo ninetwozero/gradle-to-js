@@ -1,0 +1,25 @@
+def coverageTaskAndroidJob = task("coverageTaskAndroidJob",
+        dependsOn: ':android-job:createCovAndroidTestCoverageReport') {
+
+    def dep1 = tasks.getByPath(':android-job:clean')
+
+    def target = tasks.getByPath(':android-job:createCovAndroidTestCoverageReport')
+
+    target.dependsOn dep1
+    group = "Coverage"
+    description 'Runs coverage for android-job'
+}
+
+def coverageTaskVolley = task("coverageTaskVolley",
+        dependsOn: ':volley:createCovCoverageReport') {
+
+    def dep1 = tasks.getByPath(':volley:clean')
+    def dep2 = tasks.getByPath(':volley:testCovUnitTest')
+
+    def target = tasks.getByPath(':volley:createCovCoverageReport')
+
+    target.dependsOn dep1
+    target.dependsOn dep2
+    group = "Coverage"
+    description 'Runs coverage for volley'
+}
