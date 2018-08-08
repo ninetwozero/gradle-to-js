@@ -1,0 +1,201 @@
+buildscript {
+
+    project.ext {
+        implementationVendor    = 'Asdffgh'
+        jdkVersion              = '1.8'
+
+        VERSION_FILE 				= 'src/main/resources/version.properties'
+        DEFAULT_MAJOR_VALUE 		= '0'
+        DEFAULT_MINOR_VALUE 		= '0'
+        DEFAULT_PATCH_VALUE 		= '0'
+    }
+
+    project.ext.nextRepo = {
+        credentials {
+            username = nextUsername
+            password = nextPassword
+        }
+        url = nextUrl
+    }
+}
+
+plugins {
+    id 'maven-publish'
+    id 'org.poiuytr.qwerty' version '1.6.0'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+    apply plugin: 'idea'
+    apply plugin: 'dinfgubs'
+    apply plugin: 'checkmbnm'
+    apply plugin: 'tototo'
+}
+
+// Set default version
+project.setVersion("${DEFAULT_MAJOR_VALUE}.${DEFAULT_MINOR_VALUE}.${DEFAULT_PATCH_VALUE}")
+project.subprojects.forEach { p -> p.setVersion("${DEFAULT_MAJOR_VALUE}.${DEFAULT_MINOR_VALUE}.${DEFAULT_PATCH_VALUE}") }
+ext.newVersion = [major: DEFAULT_MAJOR_VALUE, minor: DEFAULT_MINOR_VALUE, patch: DEFAULT_PATCH_VALUE]
+
+// Compute version
+if (project.hasProperty('role') && role == 'CI') { // CI operation
+    apply from: 'git-utils.gradle'
+    apply from: 'compute-official-release-version.gradle'
+
+    subprojects {
+        publishing {
+            repositories {
+                maven {
+                    url nextReleasesUrl
+                    credentials {
+                        username = nextUsername
+                        password = nextPassword
+                    }
+                }
+            }
+        }
+    }
+} else { // local operation
+    apply from: 'compute-local-release-version.gradle'
+
+    subprojects {
+        publishing {
+            repositories {
+                mavenLocal()
+            }
+        }
+    }
+}
+
+subprojects {
+
+    sourceCompatibility = jdkVersion
+    targetCompatibility = jdkVersion
+
+    // task that creates the version file using the computed new version
+    task addVersionPropertyFile(type: WriteProperties) {
+        doFirst {
+            def propFile = file(VERSION_FILE)
+            if (propFile.exists()) {
+                propFile.delete()
+            }
+        }
+        outputFile VERSION_FILE
+
+        properties(
+                'version.major': newVersion.major as String,
+                'version.minor': newVersion.minor as String,
+                'version.patch': newVersion.patch as String
+        )
+    }
+
+    processResources {
+        dependsOn addVersionPropertyFile
+    }
+
+    dinfgubs {
+        toolVersion = '3.0.1'
+        effort = 'max'
+        reportLevel = 'low'
+        reportsDir = file('build/reports/quality/dinfgubsReports')
+        excludeFilter = file('../quality/config/dinfgubs_exclude.xml')
+    }
+
+    tasks.withType(Dinfgubs) {
+        reports {
+            xml.enabled false
+            html.enabled true
+        }
+    }
+
+    checkmbnm {
+        toolVersion = '7.4'
+        configFile = file('../quality/config/checkmbnm.xml')
+        reportsDir = file('build/reports/quality/checkmbnmReports')
+    }
+
+    tasks.withType(Checkmbnm) {
+        reports {
+            xml.enabled false
+            html.enabled true
+        }
+    }
+
+    tototo {
+        toolVersion = "0.7.9"
+    }
+
+    tototoTestReport {
+        group = "reporting"
+        description = "Lorem Ipsum"
+
+        dependsOn tasks.test
+        additionalSourceDirs    = files(sourceSets.main.allSource.srcDirs)
+        classDirectories        = files(sourceSets.main.output)
+        sourceDirectories       = files(sourceSets.main.allSource.srcDirs)
+
+        reports {
+            csv.enabled = false
+            html {
+                enabled = true
+                destination = "${buildDir}/reports/tototo"
+            }
+            xml.enabled = false
+        }
+    }
+
+    test.finalizedBy(project.tasks.tototoTestReport)
+
+    repositories {
+        mavenLocal()
+        maven(nextRepo)
+    }
+
+    group 'com.test.lambda.checkout'
+
+    jar {
+        manifest {
+            attributes(
+                    'Created-By': System.getProperty('java.version') + ' (' + System.getProperty('java.vendor') + ')',
+                    'Built-By': System.getProperty('user.name'),
+                    'Built-With': "gradle-${project.gradle.gradleVersion}, groovy-${GroovySystem.version}",
+                    'Specification-Title': project.name,
+                    'Specification-Version': project.version,
+                    'Implementation-Title': project.name,
+                    'Implementation-Version': project.version,
+                    'Implementation-Vendor' : implementationVendor,
+                    'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    'Git-Commit': qwerty.head().id,
+                    'Git-Branch': qwerty.branch.current.name
+            )
+        }
+        from sourceSets.main.output
+    }
+
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+    }
+
+    task distributionZip(type: Zip) {
+        from compileJava
+        from processResources
+        into('lib') {
+            from configurations.runtime
+        }
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourceJar {
+                    classifier 'sources'
+                }
+                artifact distributionZip {
+                    classifier 'distribution'
+                }
+            }
+        }
+    }
+}

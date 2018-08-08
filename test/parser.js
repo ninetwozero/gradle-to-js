@@ -524,8 +524,16 @@ describe('Gradle build file parser', function() {
     });
 
     it('should be able to parse multiline closure syntax', function() {
-      var sampleFilePath = 'test/sample-data/issue13.build.gradle';
-      var expected = require(process.cwd() + '/test/sample-data/issue13.build.gradle.expected.js').expected;
+      var sampleFilePath = 'test/sample-data/issue13/small.build.gradle';
+      var expected = require(process.cwd() + '/test/sample-data/issue13/small.build.gradle.expected.js').expected;
+      return parser.parseFile(sampleFilePath).then(function(parsedValue) {
+        expect(parsedValue).to.deep.equal(expected);
+      });
+    });
+
+    it.only('should be able to parse the big issue13 file', function() {
+      var sampleFilePath = 'test/sample-data/issue13/big.build.gradle';
+      var expected = require(process.cwd() + '/test/sample-data/issue13/big.build.gradle.expected.js').expected;
       return parser.parseFile(sampleFilePath).then(function(parsedValue) {
         expect(parsedValue).to.deep.equal(expected);
       });
