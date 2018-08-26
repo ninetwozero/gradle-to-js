@@ -26,13 +26,11 @@
   },
   "homepage": "https://github.com/ninetwozero/gradle-to-js#readme",
   "devDependencies": {
-    "chai": "3.5.0",
-    "mocha": "2.4.5",
-    "multiline": "1.0.2",
-    "phantomjs": "1.9.20"
+    "chai": "4.1.2",
+    "mocha": "5.2.0",
+    "multiline": "1.0.2"
   },
   "dependencies": {
-    "bluebird": "3.3.5",
     "deep-assign": "2.0.0"
   }
 }
