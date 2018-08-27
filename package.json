@@ -2,9 +2,12 @@
   "name": "gradle-to-js",
   "version": "1.0.1",
   "description": "A quick & dirty gradle build file converter to javascript object",
-  "main": "index.js",
+  "main": "lib/parser.js",
+  "bin": {
+    "gradle-to-js": "./cli.js"
+  },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec"
+    "test": "mocha --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -17,7 +20,7 @@
   ],
   "files": [
     "lib/",
-    "index.js"
+    "cli.js"
   ],
   "author": "Karl Lindmark",
   "license": "Apache-2.0",
