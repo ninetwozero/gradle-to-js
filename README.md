@@ -1,5 +1,6 @@
 # gradle-to-js
 
+[![NPM Version](https://img.shields.io/npm/v/gradle-to-js.svg)](https://www.npmjs.com/package/gradle-to-js)
 [![Build Status](https://travis-ci.org/ninetwozero/gradle-to-js.svg?branch=master)](https://travis-ci.org/ninetwozero/gradle-to-js)
 
 # What's this `gradle-to-js` thing?
