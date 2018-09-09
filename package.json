@@ -1,6 +1,6 @@
 {
   "name": "gradle-to-js",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "A quick & dirty gradle build file converter to javascript object",
   "main": "lib/parser.js",
   "bin": {
