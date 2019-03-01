@@ -6,8 +6,7 @@ dependencies {
 
     testCompile([
       'org.jfrog.buildinfo:build-info-extractor-gradle:4.5.4',
-      'com.netflix.nebula:gradle-lint-plugin:latest.release'
-      ]
+      'com.netflix.nebula:gradle-lint-plugin:latest.release']
       )
 
     testCompile(org.hibernate:hibernate-core:3.6.7.Final)

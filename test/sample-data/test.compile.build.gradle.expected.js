@@ -29,13 +29,6 @@ exports.expected = {
         excludes: []
       },
       {
-        group: '',
-        name: ' \n',
-        version: '',
-        type: '',
-        excludes: []
-      },
-      {
         group: 'org.hibernate',
         name: 'hibernate-core',
         version: '3.6.7.Final)',
