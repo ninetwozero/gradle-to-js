@@ -295,6 +295,27 @@ describe('Gradle build file parser', function() {
       });
     });
 
+    it('should group plugins into an array with a given format', function() {
+      var dsl = multiline.stripIndent(function() {/*
+             plugins {
+                id 'some.id.here' version 'some.version.here'
+                id 'another.id.here'
+                version 'some.other.version.here' id 'some.other.id.here'
+             }
+            */});
+
+      var expected = {
+        plugins: [
+            {id: 'some.id.here', version: 'some.version.here'},
+            {id: 'another.id.here'},
+            {id: 'some.other.id.here', version: 'some.other.version.here'},
+        ]
+      };
+      return parser.parseText(dsl).then(function(parsedValue) {
+        expect(parsedValue).to.deep.equal(expected);
+      });
+    });
+
     it('should be able to parse booleans into booleans', function() {
       var dsl = multiline.stripIndent(function() {/*
              myVar1 true
@@ -522,6 +543,15 @@ describe('Gradle build file parser', function() {
         expect(parsedValue).to.deep.equal(expected);
       });
     });
+
+    it('can handle Windows style CRLF gradle files accordingly', function() {
+        var sampleFilePath = 'test/sample-data/windows_crlf.gradle';
+        var expected = require(process.cwd() + '/test/sample-data/windows_crlf.gradle.expected.js').expected;
+
+        return parser.parseFile(sampleFilePath).then(function(parsedValue) {
+          expect(parsedValue).to.deep.equal(expected);
+        });
+    });
     // TODO: Add test for ...
   });
   describe('(file parsing)', function() {
@@ -572,6 +602,6 @@ describe('Gradle build file parser', function() {
       return parser.parseFile(sampleFilePath).then(function(parsedValue) {
         expect(parsedValue).to.deep.equal(expected);
       });
-    });    
+    });
   });
 });
