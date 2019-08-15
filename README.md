@@ -3,24 +3,25 @@
 [![NPM Version](https://img.shields.io/npm/v/gradle-to-js.svg)](https://www.npmjs.com/package/gradle-to-js)
 [![Build Status](https://travis-ci.org/ninetwozero/gradle-to-js.svg?branch=master)](https://travis-ci.org/ninetwozero/gradle-to-js)
 
-# What's this `gradle-to-js` thing?
+## What's this `gradle-to-js` thing?
 
 gradle-to-js is a quick & dirty Gradle build file to JavaScript object parser. It is quick & dirty in the sense that it doesn't give you an exact replica of whatever the build file represents during runtime, as evaluations and similar bits are (currently) too much of a hassle to accurately represent while parsing.
 
-# Installation
+## Installation
 
 Simply run the following command to include it into your project:
 
-```bash
+```sh
 npm install gradle-to-js --save
 ```
-# Usage
 
-## As a module
+## Usage
+
+### As a module
 
 Using `gradle-to-js` as a module, you can parse both strings and files as seen below.
 
-### Files
+#### Files
 
 ```js
 var g2js = require('gradle-to-js/lib/parser');
@@ -29,7 +30,7 @@ g2js.parseFile('path/to/buildfile').then(function(representation) {
 });
 ```
 
-### Strings
+#### Strings
 
 ```js
 var g2js = require('gradle-to-js/lib/parser');
@@ -45,7 +46,7 @@ The promise will eventually resolve an object matching the build file structure 
 You can also use the module directly from the CLI, and get a json representation out of it. Nifty ey? Currently only supporting files from this direction.
 
 ```bash
-$ ./index.js test/sample-data/small.build.gradle
+./index.js test/sample-data/small.build.gradle
 ```
 
 ```json
@@ -69,8 +70,10 @@ $ ./index.js test/sample-data/small.build.gradle
 }
 ```
 
-# Author
+## Author
+
 [Karl Lindmark](https://www.github.com/karllindmark)
 
-# License
+## License
+
 Apache 2.0

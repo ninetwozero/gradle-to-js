@@ -15,4 +15,3 @@ if (fs.statSync(path)) {
     console.log(JSON.stringify(parsedValue, '', 2));
   });
 }
-

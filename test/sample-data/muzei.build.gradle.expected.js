@@ -1,6 +1,6 @@
 exports.expected = {
     buildscript: {
-      repositories: [  
+      repositories: [
         {
           data: {
             name: 'mavenCentral()'
