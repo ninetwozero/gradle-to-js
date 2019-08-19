@@ -1,7 +1,7 @@
 {
   "name": "gradle-to-js",
   "version": "2.0.0",
-  "description": "A quick & dirty gradle build file converter to javascript object",
+  "description": "A quick & dirty Gradle build file to JavaScript object parser",
   "main": "lib/parser.js",
   "bin": {
     "gradle-to-js": "./cli.js"
@@ -29,9 +29,9 @@
   },
   "homepage": "https://github.com/ninetwozero/gradle-to-js#readme",
   "devDependencies": {
-    "chai": "4.1.2",
-    "mocha": "5.2.0",
-    "multiline": "1.0.2"
+    "chai": "4.2.0",
+    "mocha": "6.2.0",
+    "multiline": "2.0.0"
   },
   "dependencies": {
     "lodash.merge": "4.6.2"
