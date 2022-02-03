@@ -29,11 +29,11 @@
   },
   "homepage": "https://github.com/ninetwozero/gradle-to-js#readme",
   "devDependencies": {
-    "chai": "4.2.0",
-    "mocha": "6.2.0",
-    "multiline": "2.0.0"
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "multiline": "^2.0.0"
   },
   "dependencies": {
-    "lodash.merge": "4.6.2"
+    "lodash.merge": "^4.6.2"
   }
 }
