@@ -1,7 +1,7 @@
 # gradle-to-js
 
 [![NPM Version](https://img.shields.io/npm/v/gradle-to-js.svg)](https://www.npmjs.com/package/gradle-to-js)
-[![Build Status](https://travis-ci.org/ninetwozero/gradle-to-js.svg?branch=master)](https://travis-ci.org/ninetwozero/gradle-to-js)
+[![Build Status][1]][2]
 
 ## What's this `gradle-to-js` thing?
 
@@ -77,3 +77,6 @@ You can also use the module directly from the CLI, and get a json representation
 ## License
 
 Apache 2.0
+
+[1]: https://github.com/ninetwozero/gradle-to-js/workflows/ci/badge.svg
+[2]: https://github.com/ninetwozero/gradle-to-js/actions
