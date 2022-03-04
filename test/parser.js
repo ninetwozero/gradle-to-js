@@ -303,6 +303,7 @@ describe('Gradle build file parser', function() {
                 version 'some.other.version.here' id 'some.other.id.here'
                 id "plugin.id.doublequotes"
                 id 'id.with.hyphen-symbol'
+                id 'id.with.underscore_symbol'
                 id ('plugin.id.parens')
                 id ('plugin.id.parens.version') version '1.2.3'
              }
@@ -315,6 +316,7 @@ describe('Gradle build file parser', function() {
             {id: 'some.other.id.here', version: 'some.other.version.here'},
             {id: 'plugin.id.doublequotes'},
             {id: 'id.with.hyphen-symbol'},
+            {id: 'id.with.underscore_symbol'},
             {id: 'plugin.id.parens'},
             {id: 'plugin.id.parens.version', version: '1.2.3'}
         ]
